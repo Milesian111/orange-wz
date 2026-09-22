@@ -83,6 +83,7 @@ public final class ToolSchemas {
                         Map.entry("type", stringSchema()),
                         Map.entry("name", stringSchema()),
                         Map.entry("value", stringSchema()),
+                        Map.entry("textBase64", stringSchema()),
                         Map.entry("x", numberSchema()),
                         Map.entry("y", numberSchema()),
                         Map.entry("base64Png", stringSchema()),

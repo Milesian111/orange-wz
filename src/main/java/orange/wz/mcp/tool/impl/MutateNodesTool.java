@@ -14,7 +14,7 @@ public final class MutateNodesTool extends BaseSessionTool {
     private final McpWorkspaceService service;
 
     public MutateNodesTool(McpSessionManager sessionManager, McpWorkspaceService service) {
-        super(sessionManager, "统一节点写入入口。直接传单项返回 result+results；传 operations 数组返回 results。支持 create_child、delete、rename、set_value、set_vector、set_png、set_sound、save、save_as。", objectSchema(
+        super(sessionManager, "统一节点写入入口。直接传单项返回 result+results；传 operations 数组返回 results。支持 create_child、delete、rename、set_value、set_chinese_text、set_vector、set_png、set_sound、save、save_as。set_chinese_text 接收 UTF-8 Base64 文本载荷，用于可靠写入中文名称和描述。", objectSchema(
                 Map.ofEntries(
                         Map.entry("operations", arraySchema(updateOperationSchema())),
                         Map.entry("rootPath", stringSchema()),
@@ -24,6 +24,7 @@ public final class MutateNodesTool extends BaseSessionTool {
                         Map.entry("type", stringSchema()),
                         Map.entry("name", stringSchema()),
                         Map.entry("value", stringSchema()),
+                        Map.entry("textBase64", stringSchema()),
                         Map.entry("x", numberSchema()),
                         Map.entry("y", numberSchema()),
                         Map.entry("base64Png", stringSchema()),

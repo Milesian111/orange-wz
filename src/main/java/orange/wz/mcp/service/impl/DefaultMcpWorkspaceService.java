@@ -17,6 +17,9 @@ import orange.wz.provider.tools.wzkey.WzKey;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -766,6 +769,10 @@ public final class DefaultMcpWorkspaceService implements McpWorkspaceService {
                 applySetValue(obj, operation.get("value"));
                 yield op;
             }
+            case "set_chinese_text" -> {
+                applySetChineseText(obj, operation.get("textBase64"));
+                yield op;
+            }
             case "set_vector" -> {
                 applySetVector(obj, operation.get("x"), operation.get("y"));
                 yield op;
@@ -972,6 +979,24 @@ public final class DefaultMcpWorkspaceService implements McpWorkspaceService {
         }
     }
 
+    // 以 ASCII 载荷传输 UTF-8 文本，避免调用端传输非 ASCII 字符时的编码损失。
+    private void applySetChineseText(WzObject obj, Object rawTextBase64) {
+        if (!(obj instanceof WzStringProperty prop) || !(rawTextBase64 instanceof String textBase64)) {
+            throw new McpException("set_chinese_text 只支持字符串节点和 textBase64 文本载荷");
+        }
+        final String text;
+        try {
+            text = StandardCharsets.UTF_8.newDecoder()
+                    .decode(ByteBuffer.wrap(Base64.getDecoder().decode(textBase64))).toString();
+        } catch (IllegalArgumentException e) {
+            throw new McpException("textBase64 不是有效的 Base64 文本载荷");
+        } catch (CharacterCodingException e) {
+            throw new McpException("textBase64 必须包含有效的 UTF-8 文本");
+        }
+        prop.setValue(text);
+        markChanged(prop);
+    }
+
     private void applySetVector(WzObject obj, Object rawX, Object rawY) {
         if (!(obj instanceof WzVectorProperty prop)) {
             throw new McpException("该节点类型不支持 set_vector: " + obj.getClass().getSimpleName());
@@ -1015,6 +1040,7 @@ public final class DefaultMcpWorkspaceService implements McpWorkspaceService {
                 case "delete", "delete_node", "remove", "remove_node" -> "delete";
                 case "rename", "set_name" -> "rename";
                 case "set_value", "value" -> "set_value";
+                case "set_chinese_text", "chinese_text" -> "set_chinese_text";
                 case "set_vector", "vector" -> "set_vector";
                 case "set_png", "png" -> "set_png";
                 case "set_sound", "sound" -> "set_sound";
