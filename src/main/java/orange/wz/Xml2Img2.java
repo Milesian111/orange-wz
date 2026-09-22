@@ -19,7 +19,7 @@ import static orange.wz.provider.WzAESConstant.DEFAULT_KEY;
 import static orange.wz.provider.WzAESConstant.WZ_GMS_IV;
 
 @Slf4j
-public class Xml2Img {
+public class Xml2Img2 {
 
     private static final String INPUT_DIR = "D:\\Code\\maplefire\\maplefire-reborn-game-data";
     private static final String OUTPUT_DIR = "D:\\MapleStory\\MaplefireReborn\\Data3";
@@ -65,7 +65,7 @@ public class Xml2Img {
 
             stream.parallel()
                     .filter(Files::isDirectory)
-                    .filter(Xml2Img::isMediaImgDirectory)
+                    .filter(Xml2Img2::isMediaImgDirectory)
                     .forEach(imgDir -> {
 
                         try (Stream<Path> files = Files.walk(imgDir)) {
@@ -138,7 +138,7 @@ public class Xml2Img {
         List<List<Path>> chunks =
                 chunk(allFiles, CHUNK_SIZE);
 
-        pool.submit(() -> chunks.parallelStream().forEach(batch -> { batch.forEach(Xml2Img::processFile); }) ).get();
+        pool.submit(() -> chunks.parallelStream().forEach(batch -> { batch.forEach(Xml2Img2::processFile); }) ).get();
 
         long end = System.currentTimeMillis();
 
