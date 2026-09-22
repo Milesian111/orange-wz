@@ -43,3 +43,5 @@ build/
 /keys.dat
 /logs/
 config.ini
+*.log
+/cp.txt
