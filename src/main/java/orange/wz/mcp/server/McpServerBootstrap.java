@@ -66,5 +66,8 @@ public final class McpServerBootstrap {
         toolRegistry.register(new MutateNodesTool(sessionManager, workspaceService));
         toolRegistry.register(new SaveNodeTool(sessionManager, workspaceService));
         toolRegistry.register(new SaveNodeAsTool(sessionManager, workspaceService));
+        toolRegistry.register(new ExportImageTool(sessionManager, workspaceService));
+        toolRegistry.register(new CommitVerifiedFileTool(sessionManager));
+        toolRegistry.register(new CommitVerifiedFilesTool(sessionManager));
     }
 }
